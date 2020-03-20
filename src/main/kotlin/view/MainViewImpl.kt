@@ -20,7 +20,7 @@ class MainViewImpl : MainView {
     private val controller: MainSceneController = MainSceneController(this)
     @FXML
     lateinit var fileChooser: Button
-    lateinit var newChart: Button
+    lateinit var clearData: Button
     lateinit var addChart: Button
     lateinit var info: TextArea
     lateinit var scatterChart: ScatterChart<Double,Double>
@@ -32,11 +32,9 @@ class MainViewImpl : MainView {
         addListener { _: ObservableValue<out String>, _: String?, newValue: String? ->
             info.text = newValue ?: "" }
         fileChooser.setOnAction { controller.chooseDir() }
-        newChart.setOnAction {
+        clearData.setOnAction {
             scatterChart.data.clear()
-            info.clear()
-            scatterChart.data.add(controller.createSeries())
-            createNodeLabel(scatterChart) }
+            info.clear() }
         addChart.setOnAction {
             scatterChart.data.add(controller.createSeries())
             createNodeLabel(scatterChart) }
@@ -48,7 +46,7 @@ class MainViewImpl : MainView {
     }
 
     override fun refreshTextArea(parameters: Parameters) {
-        info.appendText(parameters.toString())
+        info.appendText("$parameters\n")
     }
 
     private fun createNodeLabel(chart: XYChart<Double,Double>) {
@@ -60,7 +58,8 @@ class MainViewImpl : MainView {
                 tooltip.style = "-fx-font-size: 17"
                 Tooltip.install(node, tooltip)
                 val pathsToFiles = data.extraValue.toString().split("\t")
-                node.setOnMouseClicked { SecondWindow().createStage(pathsToFiles[0], pathsToFiles[1]) }
+                node.setOnMouseClicked {
+                    SecondWindow("C:\\Hard _XRay_1.txt").createStage() }
             }
         }
     }

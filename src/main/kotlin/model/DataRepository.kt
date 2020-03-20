@@ -15,7 +15,9 @@ import kotlin.streams.toList
 class DataRepository {
 
     private var currentFilesMap: HashMap<Path,Path> = HashMap()
-    private var sweep: String =""
+    private var sweep = 1
+
+
     companion object {
         private var INSTANCE: DataRepository? = null
         fun newInstance(): DataRepository {
@@ -48,7 +50,7 @@ class DataRepository {
     }
 
     private fun findParameters(pathInfo: Path) : Int{
-        var sweep = 0
+        var sweep = 1
         var distance = 0
         val fileLines: MutableList<String> = Files.readAllLines(pathInfo, Charset.forName("windows-1251"))
         for (line in fileLines){
@@ -57,14 +59,15 @@ class DataRepository {
             if (line.startsWith("t"))
                 sweep = line.replace("\\D".toRegex(), "").toInt()
         }
+        this.sweep = sweep
         return distance
     }
 
-    private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: String) : Double {
+    private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: Int) : Double {
         var intCoeff = 1.0
         when(sweep){
-            "400 ns" -> intCoeff = 2.5
-            "200 ns" -> intCoeff = 5.0
+            400 -> intCoeff = 2.5
+            200 -> intCoeff = 5.0
         }
         var maxOfNoise = waveForm.subList(2, 800).max()
         val averageNoise = waveForm.subList(2, 800).average()
@@ -82,9 +85,9 @@ class DataRepository {
         val series = XYChart.Series<Double,Double>()
         series.name = name
         for ((XRFile, TRFile) in currentFilesMap){
-            val integralOfXR = calculateIntegral(getWaveForm(XRFile), "400 ns")
+            val integralOfXR = calculateIntegral(getWaveForm(XRFile), sweep)
             val amplitudeOfTR = calculateAmplitude(getWaveForm(TRFile))
-            print("$integralOfXR   $amplitudeOfTR\n")
+            //print("$integralOfXR   $amplitudeOfTR\n")
             val node = XYChart.Data(integralOfXR, amplitudeOfTR)
             node.extraValue = "$XRFile\t$TRFile"
             series.data.add(node)
@@ -103,7 +106,7 @@ class DataRepository {
         return waveForm
     }
 
-    fun createSeriesOfWaveForm(pathToFile: String) : XYChart.Series<Double,Double> {
+     fun createSeriesOfWaveForm(pathToFile: String) : XYChart.Series<Double,Double> {
         val series = XYChart.Series<Double,Double>()
         val waveForm = getWaveForm(Paths.get(pathToFile))
         for (i in waveForm.indices){

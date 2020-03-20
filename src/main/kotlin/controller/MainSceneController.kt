@@ -20,4 +20,5 @@ class MainSceneController (private var view: MainView) {
     fun createSeries() : XYChart.Series<Double,Double> {
         return dataRepository.createSeriesXRvsTR()
     }
+
 }

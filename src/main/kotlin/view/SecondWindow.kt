@@ -10,33 +10,44 @@ import controller.SecondWindowController
 import javafx.beans.Observable
 import javafx.collections.ListChangeListener
 import javafx.scene.chart.XYChart
-import java.nio.file.Path
-import javafx.collections.ObservableList as ListC
 
-class SecondWindow {
+class SecondWindow constructor() {
 
-    private var xrPath: String = ""
-    private var trPath: String = ""
+    constructor(s: String) : this(){
+        println("constructor $path")
+        path = s
+        println("constructor $path")
+    }
+
     private val controller: SecondWindowController = SecondWindowController()
-
+    private var path: String = "oldValue"
     @FXML
+
     lateinit var xrLineChart: LineChart<Double,Double>
     lateinit var trLineChart: LineChart<Double,Double>
 
+
     @FXML
     fun initialize(){
-       // xrLineChart.data.add(XYChart.Series<Double,Double>())
-       // trLineChart.data.add(XYChart.Series<Double,Double>())
+        xrLineChart.createSymbols = false
+        trLineChart.createSymbols = false
+        println("inti + $path")
+        //xrLineChart.data.add(controller.createSeries(path))
+        xrLineChart.data.add(XYChart.Series<Double,Double>())
+        //trLineChart.data.add(controller.createSeries("C:\\Hard _XRay_1.txt"))
     }
 
-    fun createStage(xrPath: String, trPath: String) {
-        this.xrPath = xrPath
-        this.trPath = trPath
-        //xrLineChart.data.add(controller.createSeries(xrPath))
-        //trLineChart.data.add(controller.createSeries(trPath))
+    fun createStage() {
+        println(path)
+        //xrLineChart.data.add(controller.createSeries(path))
         val secondStage = Stage()
         secondStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("secondWindow.fxml")))
         secondStage.show()
+        // xrLineChart.data.add(controller.createSeries(xrPath))
+        // trLineChart.data.add(controller.createSeries(trPath))
+
     }
+
+
 
 }
