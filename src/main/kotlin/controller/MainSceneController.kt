@@ -12,7 +12,7 @@ class MainSceneController (private var view: MainView) {
 
     fun chooseDir() {
         val dirChooser = DirectoryChooser()
-        dirChooser.initialDirectory = File("C:/Эксперимент/")
+        dirChooser.initialDirectory = File("F:/Эксперимент/")
         val dir = dirChooser.showDialog(Stage())
         view.refreshTextArea(dataRepository.findTRandXRFiles(dir))
     }

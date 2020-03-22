@@ -115,7 +115,7 @@ class DataRepository {
         val series = XYChart.Series<Double,Double>()
         val waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
         for (i in waveForm.indices){
-            series.data.add(XYChart.Data<Double,Double>(i.toDouble(), waveForm[i]) )
+            series.data.add(XYChart.Data(i.toDouble(), waveForm[i]) )
         }
         return series
     }

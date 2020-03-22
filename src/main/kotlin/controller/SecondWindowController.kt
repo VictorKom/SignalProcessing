@@ -8,7 +8,7 @@ class SecondWindowController {
     private val dataRepository: DataRepository = DataRepository.newInstance()
 
     fun createSeriesOfXR() : XYChart.Series<Double,Double>{
-        return dataRepository.createSeriesOfWaveForm(dataRepository.currentLineChartOfXR, 500, 7000)
+        return dataRepository.createSeriesOfWaveForm(dataRepository.currentLineChartOfXR, 0, 5500)
     }
 
     fun createSeriesOfTR() : XYChart.Series<Double,Double>{
