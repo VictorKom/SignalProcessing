@@ -8,14 +8,15 @@ class SecondWindowController {
     private val dataRepository: DataRepository = DataRepository.newInstance()
 
     fun createSeriesOfXR() : XYChart.Series<Double,Double>{
-        return dataRepository.createSeriesOfWaveForm(dataRepository.currentLineChartOfXR, 0, 5500)
+        return dataRepository.createSeriesOfWaveFormXR(0, 7000)
     }
 
     fun createSeriesOfTR() : XYChart.Series<Double,Double>{
-        return dataRepository.createSeriesOfWaveForm(dataRepository.currentLineChartOfTR, 1500, 3000)
+        return dataRepository.createSeriesOfWaveFormTR(1000, 5000)
     }
 
     fun getFileName() : String{
-        return dataRepository.currentLineChartOfXR.substringAfterLast("_")
+        return "${dataRepository.currentLineChartOfXR.substringAfterLast("_")}\n" +
+                "%.1f".format(dataRepository.amplitudeOfTR)
     }
 }

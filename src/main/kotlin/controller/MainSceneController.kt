@@ -21,9 +21,10 @@ class MainSceneController (private var view: MainView) {
         return dataRepository.createSeriesXRvsTR()
     }
 
-    fun setCurrentLineChart(paths: List<String>) {
+    fun setCurrentLineChart(paths: List<String>, amplitude: Double) {
         dataRepository.currentLineChartOfXR = paths[0]
         dataRepository.currentLineChartOfTR = paths[1]
+        dataRepository.amplitudeOfTR = amplitude
     }
 
 }

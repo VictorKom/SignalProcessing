@@ -35,7 +35,4 @@ class SecondWindow {
         secondStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("secondWindow.fxml")))
         secondStage.show()
     }
-
-
-
 }

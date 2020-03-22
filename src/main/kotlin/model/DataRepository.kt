@@ -8,6 +8,7 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.stream.Collectors
 import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.streams.toList
@@ -20,6 +21,7 @@ class DataRepository {
     private var dateOfExperiment = ""
     var currentLineChartOfXR: String = ""
     var currentLineChartOfTR: String = ""
+    var amplitudeOfTR = 0.0
 
 
     companion object {
@@ -34,7 +36,7 @@ class DataRepository {
 
     fun findTRandXRFiles(dir: File) : Parameters {
         val filesMap = HashMap<Path,Path>()
-        val allFilesOfDir = Files.walk(Paths.get(dir.absolutePath)).toList()
+        val allFilesOfDir = Files.walk(Paths.get(dir.absolutePath), 1).toList()
         for (XR in allFilesOfDir ){
             val xrFileName = XR.fileName.toString()
             if (xrFileName.startsWith("Hard _XRay")) {
@@ -82,8 +84,21 @@ class DataRepository {
         return if (integral.isNaN()) 0.0 else integral
     }
 
-    private fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
-        return (-1000) * waveForm.min()!!
+     fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
+         val averageNoise = waveForm.subList(2, 800).average()
+         val waveFormInvert = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
+         val peaks = Peaks.findPeaks(waveFormInvert.toDoubleArray(), 7, 10.0)
+         var amplitude = 0.0
+         if (peaks.size > 2){
+            for (i in 0 until peaks.lastIndex){
+                val ratio = waveFormInvert[peaks[i + 1]] / waveFormInvert[peaks[i]]
+                if ( ratio > 0.7 && ratio < 1.3){
+                    amplitude = waveFormInvert[peaks[i]]
+                    break
+                }
+            }
+        }
+        return amplitude
     }
 
     fun createSeriesXRvsTR() : XYChart.Series<Double,Double> {
@@ -100,7 +115,7 @@ class DataRepository {
         return series
     }
 
-    private fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
+     fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
         val waveForm = ArrayList<Double>()
         val lines: MutableList<String> = Files.readAllLines(pathToFile)
         lines.removeAt(0)
@@ -111,14 +126,37 @@ class DataRepository {
         return waveForm
     }
 
-     fun createSeriesOfWaveForm(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
-        val series = XYChart.Series<Double,Double>()
-        val waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
+     fun createSeriesOfWaveFormTR(fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+         val series = XYChart.Series<Double,Double>()
+         var waveForm = getWaveForm(Paths.get(currentLineChartOfTR), fromIndex, toIndex)
+         val averageNoise = waveForm.subList(2, 800).average()
+         waveForm = waveForm.map { (it - averageNoise) * (-1000)  } as ArrayList<Double>
         for (i in waveForm.indices){
             series.data.add(XYChart.Data(i.toDouble(), waveForm[i]) )
         }
         return series
     }
 
+    fun createSeriesOfWaveFormXR(fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+        val series = XYChart.Series<Double,Double>()
+        var waveForm = getWaveForm(Paths.get(currentLineChartOfXR), fromIndex, toIndex)
+        val averageNoise = waveForm.subList(2, 800).average()
+        waveForm = waveForm.map { it - averageNoise } as ArrayList<Double>
+        for (i in waveForm.indices){
+            series.data.add(XYChart.Data(i.toDouble(), waveForm[i]) )
+        }
+        return series
+    }
 
+     fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+         val series = XYChart.Series<Double,Double>()
+         var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
+         val averageNoise = waveForm.subList(2, 800).average()
+         waveForm = waveForm.map { (it - averageNoise) * (-1000)  } as ArrayList<Double>
+         val peaks = Peaks.findPeaks(waveForm.toDoubleArray(), 7, 7.0)
+         for (peak in peaks){
+             series.data.add(XYChart.Data(peak.toDouble(), waveForm[peak]) )
+         }
+         return series
+     }
 }

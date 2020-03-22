@@ -60,7 +60,7 @@ class MainViewImpl : MainView {
                 Tooltip.install(node, tooltip)
                 val pathsToFiles = data.extraValue.toString().split("\t")
                 node.setOnMouseClicked {
-                    controller.setCurrentLineChart(pathsToFiles)
+                    controller.setCurrentLineChart(pathsToFiles, data.yValue)
                     SecondWindow().createStage() }
             }
         }

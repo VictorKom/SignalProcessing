@@ -12,9 +12,9 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view.SecondWindow"
-            prefHeight="500.0" prefWidth="700.0">
+            prefHeight="700.0" prefWidth="1200.0">
     <TextArea fx:id="chartName" prefHeight="40" prefWidth="200"/>
-    <LineChart fx:id="xrLineChart" prefHeight="200" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="50">
+    <LineChart fx:id="xrLineChart" prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="50">
         <xAxis>
             <NumberAxis side="BOTTOM"  />
         </xAxis>
@@ -22,7 +22,7 @@
             <NumberAxis side="LEFT" />
         </yAxis>
     </LineChart>
-    <LineChart fx:id="trLineChart" prefHeight="200" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <LineChart fx:id="trLineChart" prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
         <xAxis>
             <NumberAxis side="BOTTOM"  />
         </xAxis>
