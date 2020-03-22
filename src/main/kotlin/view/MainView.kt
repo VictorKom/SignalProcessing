@@ -1,9 +1,8 @@
 package view
 
-import model.Parameters
-import java.nio.file.Path
+import model.OneExperiment
 
 interface MainView {
-    fun refreshTextArea( parameters: Parameters ){}
+    fun refreshTextArea( currentExperiment: OneExperiment ){}
 
 }

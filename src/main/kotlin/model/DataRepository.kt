@@ -15,14 +15,7 @@ import kotlin.streams.toList
 
 class DataRepository {
 
-    private var currentFilesMap: HashMap<Path,Path> = HashMap()
-    private var sweep = 1
-    private var distance = 0
-    private var dateOfExperiment = ""
-    var currentLineChartOfXR: String = ""
-    var currentLineChartOfTR: String = ""
-    var amplitudeOfTR = 0.0
-
+    private val listOfSomeExperiments: ArrayList<OneExperiment> = ArrayList()
 
     companion object {
         private var INSTANCE: DataRepository? = null
@@ -34,8 +27,9 @@ class DataRepository {
         }
     }
 
-    fun findTRandXRFiles(dir: File) : Parameters {
+    fun findTRandXRFiles(dir: File) : OneExperiment {
         val filesMap = HashMap<Path,Path>()
+        val currentExperiment = OneExperiment()
         val allFilesOfDir = Files.walk(Paths.get(dir.absolutePath), 1).toList()
         for (XR in allFilesOfDir ){
             val xrFileName = XR.fileName.toString()
@@ -48,15 +42,17 @@ class DataRepository {
                 }
             }
             if (xrFileName == "_INFO.txt") {
-                distance = findParameters(XR)
-                dateOfExperiment = dir.name
+                currentExperiment.distance = findParameters(XR)["distance"]?: 0
+                currentExperiment.sweep = findParameters(XR)["sweep"]?: 0
+                currentExperiment.dateOfExperiment = dir.name
             }
         }
-        currentFilesMap = filesMap
-        return Parameters(dir.name, distance, filesMap.size)
+        currentExperiment.filesMap = filesMap
+        listOfSomeExperiments.add(currentExperiment)
+        return currentExperiment
     }
 
-    private fun findParameters(pathInfo: Path) : Int{
+    private fun findParameters(pathInfo: Path) : Map<String, Int>{
         var sweep = 1
         var distance = 0
         val fileLines: MutableList<String> = Files.readAllLines(pathInfo, Charset.forName("windows-1251"))
@@ -66,8 +62,7 @@ class DataRepository {
             if (line.startsWith("t"))
                 sweep = line.replace("\\D".toRegex(), "").toInt()
         }
-        this.sweep = sweep
-        return distance
+        return mapOf("distance" to distance, "sweep" to sweep)
     }
 
     private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: Int) : Double {
@@ -84,7 +79,7 @@ class DataRepository {
         return if (integral.isNaN()) 0.0 else integral
     }
 
-     fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
+    private fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
          val averageNoise = waveForm.subList(2, 800).average()
          val waveFormInvert = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
          val peaks = Peaks.findPeaks(waveFormInvert.toDoubleArray(), 7, 10.0)
@@ -101,21 +96,22 @@ class DataRepository {
         return amplitude
     }
 
-    fun createSeriesXRvsTR() : XYChart.Series<Double,Double> {
+    fun createSeriesXRvsTR(currentExperiment: OneExperiment) : XYChart.Series<Double,Double> {
         val series = XYChart.Series<Double,Double>()
-        series.name = "$dateOfExperiment\nd = $distance mm"
-        for ((XRFile, TRFile) in currentFilesMap){
-            val integralOfXR = calculateIntegral(getWaveForm(XRFile), sweep)
+        series.name = "${currentExperiment.dateOfExperiment}\nd = ${currentExperiment.distance} mm"
+        for ((XRFile, TRFile) in currentExperiment.filesMap){
+            val integralOfXR = calculateIntegral(getWaveForm(XRFile), currentExperiment.sweep)
             val amplitudeOfTR = calculateAmplitude(getWaveForm(TRFile))
-            //print("$integralOfXR   $amplitudeOfTR\n")
             val node = XYChart.Data(integralOfXR, amplitudeOfTR)
             node.extraValue = "$XRFile\t$TRFile"
             series.data.add(node)
+            listOfSomeExperiments.last().listOfTRAmplitude.add(amplitudeOfTR)
+            listOfSomeExperiments.last().listOfXRIntegral.add(integralOfXR)
         }
         return series
     }
 
-     fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
+    private fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
         val waveForm = ArrayList<Double>()
         val lines: MutableList<String> = Files.readAllLines(pathToFile)
         lines.removeAt(0)
@@ -126,9 +122,9 @@ class DataRepository {
         return waveForm
     }
 
-     fun createSeriesOfWaveFormTR(fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+    fun createSeriesOfWaveFormTR(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
          val series = XYChart.Series<Double,Double>()
-         var waveForm = getWaveForm(Paths.get(currentLineChartOfTR), fromIndex, toIndex)
+         var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
          val averageNoise = waveForm.subList(2, 800).average()
          waveForm = waveForm.map { (it - averageNoise) * (-1000)  } as ArrayList<Double>
         for (i in waveForm.indices){
@@ -137,9 +133,9 @@ class DataRepository {
         return series
     }
 
-    fun createSeriesOfWaveFormXR(fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+    fun createSeriesOfWaveFormXR(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
         val series = XYChart.Series<Double,Double>()
-        var waveForm = getWaveForm(Paths.get(currentLineChartOfXR), fromIndex, toIndex)
+        var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
         val averageNoise = waveForm.subList(2, 800).average()
         waveForm = waveForm.map { it - averageNoise } as ArrayList<Double>
         for (i in waveForm.indices){
@@ -148,7 +144,7 @@ class DataRepository {
         return series
     }
 
-     fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
+    fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
          val series = XYChart.Series<Double,Double>()
          var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
          val averageNoise = waveForm.subList(2, 800).average()

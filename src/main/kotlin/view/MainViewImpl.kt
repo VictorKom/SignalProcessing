@@ -13,13 +13,12 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.control.Tooltip
 import javafx.stage.Stage
-import model.Parameters
+import model.OneExperiment
 
 class MainViewImpl : MainView {
 
     private val controller: MainSceneController = MainSceneController(this)
     @FXML
-  //  lateinit var fileChooser: Button
     lateinit var clearData: Button
     lateinit var addChart: Button
     lateinit var info: TextArea
@@ -31,7 +30,6 @@ class MainViewImpl : MainView {
         sweepTimeChooser.selectionModel.selectedItemProperty().
         addListener { _: ObservableValue<out String>, _: String?, newValue: String? ->
             info.text = newValue ?: "" }
-       // fileChooser.setOnAction { controller.chooseDir() }
         clearData.setOnAction {
             scatterChart.data.clear()
             info.clear() }
@@ -46,8 +44,8 @@ class MainViewImpl : MainView {
         primaryStage?.show()
     }
 
-    override fun refreshTextArea(parameters: Parameters) {
-        info.appendText("$parameters\n")
+    override fun refreshTextArea(currentExperiment: OneExperiment) {
+        info.appendText("$currentExperiment\n")
     }
 
     private fun createNodeLabel(chart: XYChart<Double,Double>) {

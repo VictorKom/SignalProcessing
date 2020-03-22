@@ -9,7 +9,7 @@
 
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
-<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainViewImpl">
+<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="view.MainViewImpl">
     <Button fx:id="addChart" layoutX="23.0" layoutY="500" AnchorPane.leftAnchor="23" text="Add Scatter Chart"/>
     <Button fx:id="clearData" layoutX="23.0" layoutY="550" AnchorPane.leftAnchor="23" text="Clear Chart and Info"/>
     <TextArea fx:id="info" layoutX="150" layoutY="500" prefHeight="180" prefWidth="270" AnchorPane.leftAnchor="150" AnchorPane.topAnchor="500" />
