@@ -19,7 +19,7 @@ class MainViewImpl : MainView {
 
     private val controller: MainSceneController = MainSceneController(this)
     @FXML
-    lateinit var fileChooser: Button
+  //  lateinit var fileChooser: Button
     lateinit var clearData: Button
     lateinit var addChart: Button
     lateinit var info: TextArea
@@ -31,11 +31,12 @@ class MainViewImpl : MainView {
         sweepTimeChooser.selectionModel.selectedItemProperty().
         addListener { _: ObservableValue<out String>, _: String?, newValue: String? ->
             info.text = newValue ?: "" }
-        fileChooser.setOnAction { controller.chooseDir() }
+       // fileChooser.setOnAction { controller.chooseDir() }
         clearData.setOnAction {
             scatterChart.data.clear()
             info.clear() }
         addChart.setOnAction {
+            controller.chooseDir()
             scatterChart.data.add(controller.createSeries())
             createNodeLabel(scatterChart) }
     }
@@ -59,7 +60,8 @@ class MainViewImpl : MainView {
                 Tooltip.install(node, tooltip)
                 val pathsToFiles = data.extraValue.toString().split("\t")
                 node.setOnMouseClicked {
-                    SecondWindow("C:\\Hard _XRay_1.txt").createStage() }
+                    controller.setCurrentLineChart(pathsToFiles)
+                    SecondWindow().createStage() }
             }
         }
     }

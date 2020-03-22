@@ -16,6 +16,10 @@ class DataRepository {
 
     private var currentFilesMap: HashMap<Path,Path> = HashMap()
     private var sweep = 1
+    private var distance = 0
+    private var dateOfExperiment = ""
+    var currentLineChartOfXR: String = ""
+    var currentLineChartOfTR: String = ""
 
 
     companion object {
@@ -30,7 +34,6 @@ class DataRepository {
 
     fun findTRandXRFiles(dir: File) : Parameters {
         val filesMap = HashMap<Path,Path>()
-        var distance = 0
         val allFilesOfDir = Files.walk(Paths.get(dir.absolutePath)).toList()
         for (XR in allFilesOfDir ){
             val xrFileName = XR.fileName.toString()
@@ -42,8 +45,10 @@ class DataRepository {
                         filesMap.put(XR,TR)
                 }
             }
-            if (xrFileName == "_INFO.txt")
+            if (xrFileName == "_INFO.txt") {
                 distance = findParameters(XR)
+                dateOfExperiment = dir.name
+            }
         }
         currentFilesMap = filesMap
         return Parameters(dir.name, distance, filesMap.size)
@@ -81,9 +86,9 @@ class DataRepository {
         return (-1000) * waveForm.min()!!
     }
 
-    fun createSeriesXRvsTR(name: String = "default name") : XYChart.Series<Double,Double> {
+    fun createSeriesXRvsTR() : XYChart.Series<Double,Double> {
         val series = XYChart.Series<Double,Double>()
-        series.name = name
+        series.name = "$dateOfExperiment\nd = $distance mm"
         for ((XRFile, TRFile) in currentFilesMap){
             val integralOfXR = calculateIntegral(getWaveForm(XRFile), sweep)
             val amplitudeOfTR = calculateAmplitude(getWaveForm(TRFile))
@@ -95,24 +100,25 @@ class DataRepository {
         return series
     }
 
-    private fun getWaveForm(pathToFile: Path) : ArrayList<Double> {
+    private fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
         val waveForm = ArrayList<Double>()
         val lines: MutableList<String> = Files.readAllLines(pathToFile)
         lines.removeAt(0)
-        for (line in lines){
-            val value = line.split("\t")[1]
+        for (i in fromIndex..toIndex){
+            val value = lines[i].split("\t")[1]
             waveForm.add(value.toDouble())
        }
         return waveForm
     }
 
-     fun createSeriesOfWaveForm(pathToFile: String) : XYChart.Series<Double,Double> {
+     fun createSeriesOfWaveForm(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
         val series = XYChart.Series<Double,Double>()
-        val waveForm = getWaveForm(Paths.get(pathToFile))
+        val waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
         for (i in waveForm.indices){
             series.data.add(XYChart.Data<Double,Double>(i.toDouble(), waveForm[i]) )
         }
         return series
     }
+
 
 }

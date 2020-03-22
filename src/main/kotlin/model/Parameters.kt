@@ -1,6 +1,6 @@
 package model
 
-class Parameters(val date: String, val distance: Int, val numberOfFiles: Int) {
+class Parameters(private val date: String, private val distance: Int, private val numberOfFiles: Int) {
     override fun toString(): String {
         return "date: $date\td = $distance mm  amount = $numberOfFiles"
     }
