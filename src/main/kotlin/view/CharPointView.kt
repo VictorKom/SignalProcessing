@@ -6,15 +6,12 @@ import javafx.scene.Scene
 import javafx.scene.chart.LineChart
 import javafx.stage.Stage
 import Main
-import controller.SecondWindowController
-import javafx.beans.Observable
-import javafx.collections.ListChangeListener
-import javafx.scene.chart.XYChart
+import controller.CharPointController
 import javafx.scene.control.TextArea
 
-class SecondWindow {
+class CharPointView {
 
-    private val controller: SecondWindowController = SecondWindowController()
+    private val controller: CharPointController = CharPointController(this)
     @FXML
     lateinit var chartName: TextArea
     lateinit var xrLineChart: LineChart<Double,Double>
@@ -32,7 +29,7 @@ class SecondWindow {
 
     fun createStage() {
         val secondStage = Stage()
-        secondStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("secondWindow.fxml")))
+        secondStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("charPointView.fxml")))
         secondStage.show()
     }
 }

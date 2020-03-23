@@ -9,7 +9,7 @@ import model.OneExperiment
 import view.MainView
 import java.io.File
 
-class MainSceneController (private var view: MainView) {
+class MainViewController (private var view: MainView) {
     private val dataRepository: DataRepository = DataRepository.newInstance()
     private val onePulse: OnePulse = OnePulse.newInstance()
     private var currentExperiment = OneExperiment()
@@ -30,6 +30,10 @@ class MainSceneController (private var view: MainView) {
         onePulse.pathToCurrentFileOfXR = paths[0]
         onePulse.pathToCurrentFileOfTR = paths[1]
         onePulse.amplitudeOfTR = amplitude
+    }
+
+    fun clearData() {
+        dataRepository.clearData()
     }
 
 }

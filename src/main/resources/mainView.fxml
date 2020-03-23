@@ -9,10 +9,13 @@
 
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
+<?import javafx.scene.control.Label?>
 <AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="view.MainViewImpl">
-    <Button fx:id="addChart" layoutX="23.0" layoutY="500" AnchorPane.leftAnchor="23" text="Add Scatter Chart"/>
-    <Button fx:id="clearData" layoutX="23.0" layoutY="550" AnchorPane.leftAnchor="23" text="Clear Chart and Info"/>
-    <TextArea fx:id="info" layoutX="150" layoutY="500" prefHeight="180" prefWidth="270" AnchorPane.leftAnchor="150" AnchorPane.topAnchor="500" />
+    <Button fx:id="addChart" layoutX="23.0" layoutY="450" AnchorPane.leftAnchor="23" text="Add Scatter Chart"/>
+    <Button fx:id="clearData" layoutX="23.0" layoutY="500" AnchorPane.leftAnchor="23" text="Clear Chart and Info"/>
+    <Label text="Experiments info" layoutX="200" layoutY="430" />
+    <TextArea fx:id="info" layoutX="200" layoutY="450" prefHeight="140" prefWidth="350" AnchorPane.leftAnchor="200"/>
+    <Button fx:id="plotAllSelected" text="Plot all selected series" layoutX="600" layoutY="450"/>
    <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefWidth="450.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
      <xAxis>
          <NumberAxis side="BOTTOM"  />
@@ -21,7 +24,7 @@
        <NumberAxis side="LEFT" />
      </yAxis>
    </ScatterChart>
-   <ComboBox fx:id="sweepTimeChooser" layoutX="425.0" layoutY="500.0" prefWidth="150.0" promptText="Sweep time">
+<!--   <ComboBox fx:id="sweepTimeChooser" layoutX="425.0" layoutY="500.0" prefWidth="150.0" promptText="Sweep time">
        <items>
            <FXCollections fx:factory="observableArrayList">
                <String fx:value="1 mks"/>
@@ -29,5 +32,5 @@
                <String fx:value="200 ns"/>
            </FXCollections>
        </items>
-   </ComboBox>
+   </ComboBox>-->
 </AnchorPane>

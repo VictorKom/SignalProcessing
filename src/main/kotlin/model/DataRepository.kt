@@ -1,14 +1,12 @@
 package model
 
 import javafx.scene.chart.XYChart
-import javafx.scene.control.Tooltip
 import model.service.Peaks
 import java.io.File
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.stream.Collectors
 import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.streams.toList
@@ -75,7 +73,7 @@ class DataRepository {
         val averageNoise = waveForm.subList(2, 800).average()
         maxOfNoise = maxOfNoise?.plus(abs(maxOfNoise))
         waveForm.removeIf { it < maxOfNoise!! }
-        val integral = (waveForm.sum() - averageNoise * waveForm.size) / (waveForm.size * intCoeff)
+        val integral = 100 * (waveForm.sum() - averageNoise * waveForm.size) / (waveForm.size * intCoeff)
         return if (integral.isNaN()) 0.0 else integral
     }
 
@@ -144,6 +142,10 @@ class DataRepository {
         return series
     }
 
+    fun clearData() {
+        listOfSomeExperiments.clear()
+    }
+
     fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
          val series = XYChart.Series<Double,Double>()
          var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
@@ -155,4 +157,23 @@ class DataRepository {
          }
          return series
      }
+
+    fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<Double,Double>> {
+        val oneExperiment = listOfSomeExperiments[index]
+        val listOfXRIntegral = oneExperiment.listOfXRIntegral
+        val listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+        val seriesOfScatterChart = XYChart.Series<Double,Double>()
+        val seriesTROfLineChart = XYChart.Series<Double,Double>()
+        val seriesXROfLineChart = XYChart.Series<Double,Double>()
+        seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}\nd = ${oneExperiment.distance} mm"
+        seriesTROfLineChart.name = "Amplitude of TR"
+        seriesXROfLineChart.name = "Integral of X-Ray"
+        for (i in 0 until listOfTRAmplitude.size){
+            seriesOfScatterChart.data.add(XYChart.Data(listOfXRIntegral[i], listOfTRAmplitude[i]))
+            seriesXROfLineChart.data.add(XYChart.Data(i.toDouble(), listOfXRIntegral[i]))
+            seriesTROfLineChart.data.add(XYChart.Data(i.toDouble(), listOfTRAmplitude[i]))
+        }
+        return mapOf("scatter" to seriesOfScatterChart, "lineXR" to seriesXROfLineChart,
+            "lineTR" to seriesTROfLineChart)
+    }
 }

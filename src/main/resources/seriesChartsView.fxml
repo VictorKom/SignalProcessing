@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.LineChart?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.SeriesChartsView"
+            prefHeight="750.0" prefWidth="1000.0">
+        <ScatterChart fx:id="firstScatterChart" prefWidth="450" prefHeight="370" AnchorPane.leftAnchor="30" AnchorPane.topAnchor="30">
+            <xAxis>
+                <NumberAxis side="BOTTOM"  />
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT" />
+            </yAxis>
+        </ScatterChart>
+        <ScatterChart fx:id="secondScatterChart" prefWidth="450" prefHeight="370" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="30">
+            <xAxis>
+              <NumberAxis side="BOTTOM"  />
+            </xAxis>
+             <yAxis>
+                 <NumberAxis side="LEFT" />
+             </yAxis>
+        </ScatterChart>
+        <LineChart fx:id="firstLineChart" prefWidth="450" prefHeight="320" AnchorPane.leftAnchor="30" AnchorPane.bottomAnchor="30">
+            <xAxis>
+                 <NumberAxis side="BOTTOM"  />
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT" />
+             </yAxis>
+        </LineChart>
+         <LineChart fx:id="secondLineChart" prefWidth="450" prefHeight="320" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+             <xAxis>
+                   <NumberAxis side="BOTTOM"  />
+             </xAxis>
+             <yAxis>
+                <NumberAxis side="LEFT" />
+             </yAxis>
+         </LineChart>
+</AnchorPane>
