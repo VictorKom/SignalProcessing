@@ -2,12 +2,12 @@ package controller
 
 import javafx.scene.chart.XYChart
 import model.DataRepository
-import view.SeriesChartsView
+import view.ChartsOfOneExpView
 
-class SeriesChartsController (private val view: SeriesChartsView) {
+class SeriesChartsController (private val view: ChartsOfOneExpView) {
     private val dataRepository = DataRepository.newInstance()
 
-    fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<Double,Double>> {
+    fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any,Double>> {
        return dataRepository.getChartsOfOneExperiments(index)
     }
 

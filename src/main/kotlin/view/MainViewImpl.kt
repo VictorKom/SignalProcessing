@@ -8,7 +8,6 @@ import javafx.scene.Scene
 import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.XYChart
 import javafx.scene.control.Button
-import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.control.Tooltip
 import javafx.stage.Stage
@@ -38,10 +37,11 @@ class MainViewImpl : MainView {
             controller.chooseDir()
             scatterChart.data.add(controller.createSeries())
             createNodeLabel(scatterChart) }
-        plotAllSelected.setOnAction { SeriesChartsView().createStage() }
+        plotAllSelected.setOnAction { ChartsOfOneExpView().createStage() }
     }
 
     fun start(primaryStage: Stage?) {
+        primaryStage?.title = "Signal-processing"
         primaryStage?.scene = Scene(FXMLLoader.load(Main::class.java.getResource("mainView.fxml")))
         primaryStage?.show()
     }

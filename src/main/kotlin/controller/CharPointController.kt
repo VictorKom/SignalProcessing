@@ -17,8 +17,7 @@ class CharPointController (private var view: CharPointView) {
         return dataRepository.createSeriesOfWaveFormTR(onePulse.pathToCurrentFileOfTR ,1000, 5000)
     }
 
-    fun getFileName() : String{
-        return "${onePulse.pathToCurrentFileOfXR.substringAfterLast("_")}\n" +
-                "%.1f".format(onePulse.amplitudeOfTR)
+    fun getFileName() : String {
+        return onePulse.getInfo()
     }
 }

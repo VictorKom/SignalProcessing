@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.chart.ScatterChart?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.CharPointView"
-            prefHeight="700.0" prefWidth="1000.0">
-    <TextArea fx:id="chartName" prefHeight="40" prefWidth="200"/>
-    <LineChart fx:id="xrLineChart" prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="50">
+
+<AnchorPane stylesheets="@css/charPoint.css" prefHeight="700.0" prefWidth="1000.0"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CharPointView">
+    <Label fx:id="chartName" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="130"/>
+    <LineChart  fx:id="xrLineChart" legendVisible="false" title="X-Ray signal" createSymbols="false"
+                prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="80">
         <xAxis>
-            <NumberAxis side="BOTTOM"  />
+            <NumberAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
             <NumberAxis side="LEFT" />
         </yAxis>
     </LineChart>
-    <LineChart fx:id="trLineChart" prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+    <LineChart fx:id="trLineChart" legendVisible="false" title="TR signal" createSymbols="false"
+               prefHeight="300" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
         <xAxis>
-            <NumberAxis side="BOTTOM"  />
+            <NumberAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
             <NumberAxis side="LEFT" />

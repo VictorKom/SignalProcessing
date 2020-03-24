@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.ScatterChart?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
-<?import javafx.scene.control.Label?>
-<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="view.MainViewImpl">
-    <Button fx:id="addChart" layoutX="23.0" layoutY="450" AnchorPane.leftAnchor="23" text="Add Scatter Chart"/>
-    <Button fx:id="clearData" layoutX="23.0" layoutY="500" AnchorPane.leftAnchor="23" text="Clear Chart and Info"/>
-    <Label text="Experiments info" layoutX="200" layoutY="430" />
-    <TextArea fx:id="info" layoutX="200" layoutY="450" prefHeight="140" prefWidth="350" AnchorPane.leftAnchor="200"/>
-    <Button fx:id="plotAllSelected" text="Plot all selected series" layoutX="600" layoutY="450"/>
-   <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefWidth="450.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainViewImpl">
+    <Button fx:id="addChart" layoutX="23.0" layoutY="550" text="Add Scatter Chart" AnchorPane.leftAnchor="23" />
+    <Button fx:id="clearData" layoutX="23.0" layoutY="600" text="Clear Chart and Info" AnchorPane.leftAnchor="23" />
+    <Label layoutX="200" layoutY="530" text="Experiments info:" />
+    <TextArea fx:id="info" layoutX="200" layoutY="550" prefHeight="140" prefWidth="350" AnchorPane.leftAnchor="200" />
+    <Button fx:id="plotAllSelected" layoutX="600" layoutY="550" text="Plot all selected series" />
+   <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefHeight="450.0" stylesheets="@css/scatterChart.css" title="ScatterChart" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
      <xAxis>
-         <NumberAxis side="BOTTOM"  />
+         <NumberAxis label="X-Ray Integral" side="BOTTOM" />
      </xAxis>
      <yAxis>
-       <NumberAxis side="LEFT" />
+       <NumberAxis label="TR Amplitude" side="LEFT" />
      </yAxis>
    </ScatterChart>
 <!--   <ComboBox fx:id="sweepTimeChooser" layoutX="425.0" layoutY="500.0" prefWidth="150.0" promptText="Sweep time">

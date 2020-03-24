@@ -16,7 +16,7 @@ class MainViewController (private var view: MainView) {
 
     fun chooseDir() {
         val dirChooser = DirectoryChooser()
-        dirChooser.initialDirectory = File("F:/Эксперимент/")
+        dirChooser.initialDirectory = File("C:/Эксперимент/")
         val dir = dirChooser.showDialog(Stage())
         currentExperiment = dataRepository.findTRandXRFiles(dir)
         view.refreshTextArea(currentExperiment)

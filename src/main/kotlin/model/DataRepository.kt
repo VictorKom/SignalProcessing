@@ -158,21 +158,21 @@ class DataRepository {
          return series
      }
 
-    fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<Double,Double>> {
+    fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any, Double>> {
         val oneExperiment = listOfSomeExperiments[index]
         val listOfXRIntegral = oneExperiment.listOfXRIntegral
         val listOfTRAmplitude = oneExperiment.listOfTRAmplitude
         val seriesOfScatterChart = XYChart.Series<Double,Double>()
-        val seriesTROfLineChart = XYChart.Series<Double,Double>()
-        val seriesXROfLineChart = XYChart.Series<Double,Double>()
-        seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}\nd = ${oneExperiment.distance} mm"
+        val seriesTROfLineChart = XYChart.Series<String,Double>()
+        val seriesXROfLineChart = XYChart.Series<String,Double>()
+        seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}  d = ${oneExperiment.distance} mm"
         seriesTROfLineChart.name = "Amplitude of TR"
         seriesXROfLineChart.name = "Integral of X-Ray"
         for (i in 0 until listOfTRAmplitude.size){
             seriesOfScatterChart.data.add(XYChart.Data(listOfXRIntegral[i], listOfTRAmplitude[i]))
-            seriesXROfLineChart.data.add(XYChart.Data(i.toDouble(), listOfXRIntegral[i]))
-            seriesTROfLineChart.data.add(XYChart.Data(i.toDouble(), listOfTRAmplitude[i]))
-        }
+            seriesXROfLineChart.data.add(XYChart.Data(i.toString(), listOfXRIntegral[i]))
+            seriesTROfLineChart.data.add(XYChart.Data(i.toString(), listOfTRAmplitude[i]))
+    }
         return mapOf("scatter" to seriesOfScatterChart, "lineXR" to seriesXROfLineChart,
             "lineTR" to seriesTROfLineChart)
     }

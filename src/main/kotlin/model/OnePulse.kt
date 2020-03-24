@@ -14,4 +14,10 @@ class OnePulse {
             return INSTANCE!!
         }
     }
+
+    fun getInfo() : String{
+        return "File number: ${pathToCurrentFileOfXR.substringAfterLast("_").substringBefore(".")}\n" +
+                "TR signal amplitude: %.1f mV\n".format(amplitudeOfTR) + "X-Ray signal delay: ns"
+    }
+
 }
