@@ -1,18 +1,18 @@
 package view
 
 import Main
-import controller.SeriesChartsController
+import controller.ChartsOfOneExpController
+import controller.MainViewController
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.StackedBarChart
 import javafx.scene.chart.XYChart
-import javafx.scene.control.TextField
 import javafx.stage.Stage
 
-class ChartsOfOneExpView {
-    private val controller: SeriesChartsController = SeriesChartsController(this)
+class ChartsOfOneExpView : MainView{
+    private val controller: ChartsOfOneExpController = ChartsOfOneExpController(this)
 
     @FXML
     lateinit var scatterChart: ScatterChart<Double,Double>
@@ -27,8 +27,9 @@ class ChartsOfOneExpView {
     }
 
     fun createStage() {
-        val secondStage = Stage()
-        secondStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("seriesChartsView.fxml")))
-        secondStage.show()
+        val secondaryStage = Stage()
+        secondaryStage.title = "Charts of one experiment"
+        secondaryStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("seriesChartsView.fxml")))
+        secondaryStage.show()
     }
 }

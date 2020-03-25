@@ -6,6 +6,8 @@ import javafx.stage.Stage
 import model.OnePulse
 import model.DataRepository
 import model.OneExperiment
+import view.ChartPointView
+import view.ChartsOfOneExpView
 import view.MainView
 import java.io.File
 
@@ -26,14 +28,17 @@ class MainViewController (private var view: MainView) {
         return dataRepository.createSeriesXRvsTR(currentExperiment)
     }
 
-    fun setCurrentLineChart(paths: List<String>, amplitude: Double) {
-        onePulse.pathToCurrentFileOfXR = paths[0]
-        onePulse.pathToCurrentFileOfTR = paths[1]
+    fun plotCurrentLineChart(property: List<String>, amplitude: Double) {
+        onePulse.pathToCurrentFileOfXR = property[0]
+        onePulse.pathToCurrentFileOfTR = property[1]
         onePulse.amplitudeOfTR = amplitude
+        onePulse.delay = property[2]
+        ChartPointView().createStage()
     }
 
     fun clearData() {
         dataRepository.clearData()
     }
+
 
 }

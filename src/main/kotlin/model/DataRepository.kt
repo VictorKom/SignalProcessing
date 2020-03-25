@@ -64,17 +64,22 @@ class DataRepository {
     }
 
     private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: Int) : Double {
-        var intCoeff = 1.0
-        when(sweep){
-            400 -> intCoeff = 2.5
-            200 -> intCoeff = 5.0
-        }
+        val sweepCoeff = getSweepCoefficient(sweep)
         var maxOfNoise = waveForm.subList(2, 800).max()
         val averageNoise = waveForm.subList(2, 800).average()
         maxOfNoise = maxOfNoise?.plus(abs(maxOfNoise))
         waveForm.removeIf { it < maxOfNoise!! }
-        val integral = 100 * (waveForm.sum() - averageNoise * waveForm.size) / (waveForm.size * intCoeff)
+        val integral = 100 * (waveForm.sum() - averageNoise * waveForm.size) / (waveForm.size * sweepCoeff)
         return if (integral.isNaN()) 0.0 else integral
+    }
+
+    private fun getSweepCoefficient(sweep: Int) : Double{
+        var coeff = 1.0
+        when(sweep){
+            400 -> coeff = 2.5
+            200 -> coeff = 5.0
+        }
+        return coeff
     }
 
     private fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
@@ -98,10 +103,12 @@ class DataRepository {
         val series = XYChart.Series<Double,Double>()
         series.name = "${currentExperiment.dateOfExperiment}\nd = ${currentExperiment.distance} mm"
         for ((XRFile, TRFile) in currentExperiment.filesMap){
-            val integralOfXR = calculateIntegral(getWaveForm(XRFile), currentExperiment.sweep)
+            val xrWaveForm = getWaveForm(XRFile)
+            val delay = calculateDelay(xrWaveForm, currentExperiment.sweep)
+            val integralOfXR = calculateIntegral(xrWaveForm, currentExperiment.sweep)
             val amplitudeOfTR = calculateAmplitude(getWaveForm(TRFile))
             val node = XYChart.Data(integralOfXR, amplitudeOfTR)
-            node.extraValue = "$XRFile\t$TRFile"
+            node.extraValue = "$XRFile\t$TRFile\t$delay"
             series.data.add(node)
             listOfSomeExperiments.last().listOfTRAmplitude.add(amplitudeOfTR)
             listOfSomeExperiments.last().listOfXRIntegral.add(integralOfXR)
@@ -163,17 +170,31 @@ class DataRepository {
         val listOfXRIntegral = oneExperiment.listOfXRIntegral
         val listOfTRAmplitude = oneExperiment.listOfTRAmplitude
         val seriesOfScatterChart = XYChart.Series<Double,Double>()
-        val seriesTROfLineChart = XYChart.Series<String,Double>()
-        val seriesXROfLineChart = XYChart.Series<String,Double>()
+        val seriesTROfBarChart = XYChart.Series<String,Double>()
+        val seriesXROfBarChart = XYChart.Series<String,Double>()
         seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}  d = ${oneExperiment.distance} mm"
-        seriesTROfLineChart.name = "Amplitude of TR"
-        seriesXROfLineChart.name = "Integral of X-Ray"
+        seriesTROfBarChart.name = "Amplitude of TR"
+        seriesXROfBarChart.name = "Integral of X-Ray"
         for (i in 0 until listOfTRAmplitude.size){
             seriesOfScatterChart.data.add(XYChart.Data(listOfXRIntegral[i], listOfTRAmplitude[i]))
-            seriesXROfLineChart.data.add(XYChart.Data(i.toString(), listOfXRIntegral[i]))
-            seriesTROfLineChart.data.add(XYChart.Data(i.toString(), listOfTRAmplitude[i]))
+            seriesXROfBarChart.data.add(XYChart.Data(i.toString(), listOfXRIntegral[i]))
+            seriesTROfBarChart.data.add(XYChart.Data(i.toString(), listOfTRAmplitude[i]))
     }
-        return mapOf("scatter" to seriesOfScatterChart, "lineXR" to seriesXROfLineChart,
-            "lineTR" to seriesTROfLineChart)
+        return mapOf("scatter" to seriesOfScatterChart, "lineXR" to seriesXROfBarChart,
+            "lineTR" to seriesTROfBarChart)
+    }
+
+    private fun calculateDelay(waveForm: ArrayList<Double>, sweep: Int) : String {
+        val sweepCoeff = getSweepCoefficient(sweep)
+        var delay = ""
+        var maxOfNoise = waveForm.subList(2, 800).max()
+        maxOfNoise = maxOfNoise?.plus(abs(maxOfNoise))
+        for (i in waveForm.indices){
+            if (waveForm[i] > maxOfNoise!!){
+                delay = "${(i - 1000) / sweepCoeff}"
+                break
+            }
+        }
+        return delay
     }
 }

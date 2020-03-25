@@ -1,6 +1,7 @@
 package view
 
 import Main
+import controller.ChartsOfOneExpController
 import controller.MainViewController
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -16,6 +17,7 @@ import model.OneExperiment
 class MainViewImpl : MainView {
 
     private val controller: MainViewController = MainViewController(this)
+
     @FXML
     lateinit var clearData: Button
     lateinit var addChart: Button
@@ -58,10 +60,8 @@ class MainViewImpl : MainView {
                 val tooltip = Tooltip(label)
                 tooltip.style = "-fx-font-size: 17"
                 Tooltip.install(node, tooltip)
-                val pathsToFiles = data.extraValue.toString().split("\t")
-                node.setOnMouseClicked {
-                    controller.setCurrentLineChart(pathsToFiles, data.yValue)
-                    CharPointView().createStage() }
+                val property = data.extraValue.toString().split("\t")
+                node.setOnMouseClicked { controller.plotCurrentLineChart(property, data.yValue) }
             }
         }
     }

@@ -6,13 +6,12 @@ import javafx.scene.Scene
 import javafx.scene.chart.LineChart
 import javafx.stage.Stage
 import Main
-import controller.CharPointController
+import controller.ChartPointController
 import javafx.scene.control.Label
-import javafx.scene.control.TextArea
 
-class CharPointView {
+class ChartPointView {
 
-    private val controller: CharPointController = CharPointController(this)
+    private val controller: ChartPointController = ChartPointController(this)
     @FXML
     lateinit var chartName: Label
     lateinit var xrLineChart: LineChart<Double,Double>

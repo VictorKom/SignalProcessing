@@ -3,9 +3,9 @@ package controller
 import javafx.scene.chart.XYChart
 import model.OnePulse
 import model.DataRepository
-import view.CharPointView
+import view.ChartPointView
 
-class CharPointController (private var view: CharPointView) {
+class ChartPointController (private var view: ChartPointView) {
     private val dataRepository: DataRepository = DataRepository.newInstance()
     private val onePulse: OnePulse = OnePulse.newInstance()
 
