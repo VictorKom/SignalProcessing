@@ -75,7 +75,7 @@ class DataRepository {
 
     private fun getSweepCoefficient(sweep: Int) : Double{
         var coeff = 1.0
-        when(sweep){
+        when(sweep) {
             400 -> coeff = 2.5
             200 -> coeff = 5.0
         }
@@ -108,7 +108,7 @@ class DataRepository {
             val integralOfXR = calculateIntegral(xrWaveForm, currentExperiment.sweep)
             val amplitudeOfTR = calculateAmplitude(getWaveForm(TRFile))
             val node = XYChart.Data(integralOfXR, amplitudeOfTR)
-            node.extraValue = "$XRFile\t$TRFile\t$delay"
+            node.extraValue = "$XRFile\t$TRFile\t$delay\t${currentExperiment.sweep}"
             series.data.add(node)
             listOfSomeExperiments.last().listOfTRAmplitude.add(amplitudeOfTR)
             listOfSomeExperiments.last().listOfXRIntegral.add(integralOfXR)
@@ -189,8 +189,8 @@ class DataRepository {
         var delay = ""
         var maxOfNoise = waveForm.subList(2, 800).max()
         maxOfNoise = maxOfNoise?.plus(abs(maxOfNoise))
-        for (i in waveForm.indices){
-            if (waveForm[i] > maxOfNoise!!){
+        for (i in 1150 until waveForm.size) {
+            if (waveForm[i] > maxOfNoise!!) {
                 delay = "${(i - 1000) / sweepCoeff}"
                 break
             }

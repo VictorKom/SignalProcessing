@@ -18,7 +18,7 @@ class MainViewController (private var view: MainView) {
 
     fun chooseDir() {
         val dirChooser = DirectoryChooser()
-        dirChooser.initialDirectory = File("C:/Эксперимент/")
+        dirChooser.initialDirectory = File("F:/Эксперимент/")
         val dir = dirChooser.showDialog(Stage())
         currentExperiment = dataRepository.findTRandXRFiles(dir)
         view.refreshTextArea(currentExperiment)
@@ -33,6 +33,7 @@ class MainViewController (private var view: MainView) {
         onePulse.pathToCurrentFileOfTR = property[1]
         onePulse.amplitudeOfTR = amplitude
         onePulse.delay = property[2]
+        onePulse.sweep = property[3]
         ChartPointView().createStage()
     }
 

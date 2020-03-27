@@ -17,7 +17,7 @@ class ChartPointController (private var view: ChartPointView) {
         return dataRepository.createSeriesOfWaveFormTR(onePulse.pathToCurrentFileOfTR ,1000, 5000)
     }
 
-    fun getFileName() : String {
+    fun getFileInfo() : String {
         return onePulse.getInfo()
     }
 }

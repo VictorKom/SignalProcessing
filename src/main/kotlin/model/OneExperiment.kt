@@ -11,6 +11,6 @@ class OneExperiment {
     var dateOfExperiment = ""
 
     override fun toString(): String {
-        return "date: $dateOfExperiment\td = $distance mm  amount = ${filesMap.size}"
+        return "date: $dateOfExperiment\td = $distance mm\tamount = ${filesMap.size}"
     }
 }

@@ -60,7 +60,7 @@ object Peaks {
      * @return list of peak indexes
      */
     @JvmOverloads
-    fun findPeaks(
+    fun  findPeaks(
         data: DoubleArray, width: Int,
         threshold: Double, decayRate: Double = 0.0, isRelative: Boolean = false
     ): LinkedList<Int> {

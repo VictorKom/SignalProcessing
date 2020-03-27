@@ -10,8 +10,9 @@ import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.StackedBarChart
 import javafx.scene.chart.XYChart
 import javafx.stage.Stage
+import model.OneExperiment
 
-class ChartsOfOneExpView : MainView{
+class ChartsOfOneExpView {
     private val controller: ChartsOfOneExpController = ChartsOfOneExpController(this)
 
     @FXML
@@ -31,5 +32,6 @@ class ChartsOfOneExpView : MainView{
         secondaryStage.title = "Charts of one experiment"
         secondaryStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("seriesChartsView.fxml")))
         secondaryStage.show()
+       // controller.saveToFile(secondaryStage.scene, "F:/1.png")
     }
 }

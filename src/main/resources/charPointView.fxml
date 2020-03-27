@@ -6,7 +6,7 @@
 
 <AnchorPane stylesheets="@css/charPoint.css" prefHeight="700.0" prefWidth="1000.0"
             xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChartPointView">
-    <Label fx:id="chartName" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="130"/>
+    <Label fx:id="chartName" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="80"/>
     <LineChart  fx:id="xrLineChart" legendVisible="false" title="X-Ray signal" createSymbols="false"
                 prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="80">
         <xAxis>

@@ -20,7 +20,7 @@ class ChartPointView {
 
     @FXML
     fun initialize(){
-        chartName.text = controller.getFileName()
+        chartName.text = controller.getFileInfo()
         xrLineChart.data.add(controller.createSeriesOfXR())
         trLineChart.data.add(controller.createSeriesOfTR())
     }
