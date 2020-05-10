@@ -7,13 +7,15 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.streams.toList
 
 class DataRepository {
 
-    private val listOfSomeExperiments: ArrayList<OneExperiment> = ArrayList()
+    val listOfSomeExperiments: ArrayList<OneExperiment> = ArrayList()
 
     companion object {
         private var INSTANCE: DataRepository? = null
@@ -25,23 +27,23 @@ class DataRepository {
         }
     }
 
-    fun findTRandXRFiles(dir: File) : OneExperiment {
-        val filesMap = HashMap<Path,Path>()
+    fun findTRandXRFiles(dir: File): OneExperiment {
+        val filesMap = HashMap<Path, Path>()
         val currentExperiment = OneExperiment()
         val allFilesOfDir = Files.walk(Paths.get(dir.absolutePath), 1).toList()
-        for (XR in allFilesOfDir ){
+        for (XR in allFilesOfDir) {
             val xrFileName = XR.fileName.toString()
             if (xrFileName.startsWith("Hard _XRay")) {
-                for (TR in allFilesOfDir){
+                for (TR in allFilesOfDir) {
                     val trFileName = TR.fileName.toString()
                     val fileNumber = xrFileName.substringAfterLast("_")
                     if (trFileName.startsWith("TR_D1") && trFileName.endsWith(fileNumber))
-                        filesMap.put(XR,TR)
+                        filesMap.put(XR, TR)
                 }
             }
             if (xrFileName == "_INFO.txt") {
-                currentExperiment.distance = findParameters(XR)["distance"]?: 0
-                currentExperiment.sweep = findParameters(XR)["sweep"]?: 0
+                currentExperiment.distance = findParameters(XR)["distance"] ?: 0
+                currentExperiment.sweep = findParameters(XR)["sweep"] ?: 0
                 currentExperiment.dateOfExperiment = dir.name
             }
         }
@@ -50,11 +52,11 @@ class DataRepository {
         return currentExperiment
     }
 
-    private fun findParameters(pathInfo: Path) : Map<String, Int>{
+    private fun findParameters(pathInfo: Path): Map<String, Int> {
         var sweep = 1
         var distance = 0
         val fileLines: MutableList<String> = Files.readAllLines(pathInfo, Charset.forName("windows-1251"))
-        for (line in fileLines){
+        for (line in fileLines) {
             if (line.startsWith("d"))
                 distance = line.replace("\\D".toRegex(), "").toInt()
             if (line.startsWith("t"))
@@ -63,7 +65,7 @@ class DataRepository {
         return mapOf("distance" to distance, "sweep" to sweep)
     }
 
-    private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: Int) : Double {
+    private fun calculateIntegral(waveForm: ArrayList<Double>, sweep: Int): Double {
         val sweepCoeff = getSweepCoefficient(sweep)
         var maxOfNoise = waveForm.subList(2, 800).max()
         val averageNoise = waveForm.subList(2, 800).average()
@@ -73,24 +75,24 @@ class DataRepository {
         return if (integral.isNaN()) 0.0 else integral
     }
 
-    private fun getSweepCoefficient(sweep: Int) : Double{
+    private fun getSweepCoefficient(sweep: Int): Double {
         var coeff = 1.0
-        when(sweep) {
+        when (sweep) {
             400 -> coeff = 2.5
             200 -> coeff = 5.0
         }
         return coeff
     }
 
-    private fun calculateAmplitude(waveForm: ArrayList<Double>) : Double {
-         val averageNoise = waveForm.subList(2, 800).average()
-         val waveFormInvert = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
-         val peaks = Peaks.findPeaks(waveFormInvert.toDoubleArray(), 7, 10.0)
-         var amplitude = 0.0
-         if (peaks.size > 2){
-            for (i in 0 until peaks.lastIndex){
+    private fun calculateAmplitude(waveForm: ArrayList<Double>): Double {
+        val averageNoise = waveForm.subList(2, 800).average()
+        val waveFormInvert = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
+        val peaks = Peaks.findPeaks(waveFormInvert.toDoubleArray(), 7, 10.0)
+        var amplitude = 0.0
+        if (peaks.size > 2) {
+            for (i in 0 until peaks.lastIndex) {
                 val ratio = waveFormInvert[peaks[i + 1]] / waveFormInvert[peaks[i]]
-                if ( ratio > 0.7 && ratio < 1.3){
+                if (ratio > 0.7 && ratio < 1.3) {
                     amplitude = waveFormInvert[peaks[i]]
                     break
                 }
@@ -99,10 +101,10 @@ class DataRepository {
         return amplitude
     }
 
-    fun createSeriesXRvsTR(currentExperiment: OneExperiment) : XYChart.Series<Double,Double> {
-        val series = XYChart.Series<Double,Double>()
+    fun createSeriesXRvsTR(currentExperiment: OneExperiment): XYChart.Series<Double, Double> {
+        val series = XYChart.Series<Double, Double>()
         series.name = "${currentExperiment.dateOfExperiment}\nd = ${currentExperiment.distance} mm"
-        for ((XRFile, TRFile) in currentExperiment.filesMap){
+        for ((XRFile, TRFile) in currentExperiment.filesMap) {
             val xrWaveForm = getWaveForm(XRFile)
             val delay = calculateDelay(xrWaveForm, currentExperiment.sweep)
             val integralOfXR = calculateIntegral(xrWaveForm, currentExperiment.sweep)
@@ -112,39 +114,49 @@ class DataRepository {
             series.data.add(node)
             listOfSomeExperiments.last().listOfTRAmplitude.add(amplitudeOfTR)
             listOfSomeExperiments.last().listOfXRIntegral.add(integralOfXR)
+            if (delay == "")
+                listOfSomeExperiments.last().listOfXRDelay.add(0.0)
+            else
+                listOfSomeExperiments.last().listOfXRDelay.add(delay.toDouble())
         }
         return series
     }
 
-    private fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000) : ArrayList<Double> {
+    private fun getWaveForm(pathToFile: Path, fromIndex: Int = 0, toIndex: Int = 7000): ArrayList<Double> {
         val waveForm = ArrayList<Double>()
         val lines: MutableList<String> = Files.readAllLines(pathToFile)
         lines.removeAt(0)
-        for (i in fromIndex..toIndex){
+        for (i in fromIndex..toIndex) {
             val value = lines[i].split("\t")[1]
             waveForm.add(value.toDouble())
-       }
+        }
         return waveForm
     }
 
-    fun createSeriesOfWaveFormTR(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
-         val series = XYChart.Series<Double,Double>()
-         var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
-         val averageNoise = waveForm.subList(2, 800).average()
-         waveForm = waveForm.map { (it - averageNoise) * (-1000)  } as ArrayList<Double>
-        for (i in waveForm.indices){
-            series.data.add(XYChart.Data(i.toDouble(), waveForm[i]) )
+    fun createSeriesOfWaveFormTR(pathToFile: String, fromIndex: Int, toIndex: Int): XYChart.Series<Double, Double> {
+        val series = XYChart.Series<Double, Double>()
+        var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
+        val averageNoise = waveForm.subList(2, 800).average()
+        waveForm = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
+        for (i in waveForm.indices) {
+            series.data.add(XYChart.Data(i.toDouble(), waveForm[i]))
         }
         return series
     }
 
-    fun createSeriesOfWaveFormXR(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
-        val series = XYChart.Series<Double,Double>()
+    fun createSeriesOfWaveFormXR(
+        pathToFile: String,
+        fromIndex: Int,
+        toIndex: Int,
+        sweep: String
+    ): XYChart.Series<Double, Double> {
+        val coeff = getSweepCoefficient(sweep.toInt())
+        val series = XYChart.Series<Double, Double>()
         var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
         val averageNoise = waveForm.subList(2, 800).average()
         waveForm = waveForm.map { it - averageNoise } as ArrayList<Double>
-        for (i in waveForm.indices){
-            series.data.add(XYChart.Data(i.toDouble(), waveForm[i]) )
+        for (i in waveForm.indices) {
+            series.data.add(XYChart.Data(i / coeff, waveForm[i]))
         }
         return series
     }
@@ -153,38 +165,110 @@ class DataRepository {
         listOfSomeExperiments.clear()
     }
 
-    fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int) : XYChart.Series<Double,Double> {
-         val series = XYChart.Series<Double,Double>()
-         var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
-         val averageNoise = waveForm.subList(2, 800).average()
-         waveForm = waveForm.map { (it - averageNoise) * (-1000)  } as ArrayList<Double>
-         val peaks = Peaks.findPeaks(waveForm.toDoubleArray(), 7, 7.0)
-         for (peak in peaks){
-             series.data.add(XYChart.Data(peak.toDouble(), waveForm[peak]) )
-         }
-         return series
-     }
+    fun createSeriesOfPeaks(pathToFile: String, fromIndex: Int, toIndex: Int): XYChart.Series<Double, Double> {
+        val series = XYChart.Series<Double, Double>()
+        var waveForm = getWaveForm(Paths.get(pathToFile), fromIndex, toIndex)
+        val averageNoise = waveForm.subList(2, 800).average()
+        waveForm = waveForm.map { (it - averageNoise) * (-1000) } as ArrayList<Double>
+        val peaks = Peaks.findPeaks(waveForm.toDoubleArray(), 7, 7.0)
+        for (peak in peaks) {
+            series.data.add(XYChart.Data(peak.toDouble(), waveForm[peak]))
+        }
+        return series
+    }
 
     fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any, Double>> {
         val oneExperiment = listOfSomeExperiments[index]
-        val listOfXRIntegral = oneExperiment.listOfXRIntegral
-        val listOfTRAmplitude = oneExperiment.listOfTRAmplitude
-        val seriesOfScatterChart = XYChart.Series<Double,Double>()
-        val seriesTROfBarChart = XYChart.Series<String,Double>()
-        val seriesXROfBarChart = XYChart.Series<String,Double>()
+        val listOfTRAmplitude: MutableList<Double>
+        val listOfXRIntegral: MutableList<Double>
+        if (oneExperiment.listOfXRIntegral.size > 49) {
+            listOfXRIntegral = oneExperiment.listOfXRIntegral.subList(0, 50)
+            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
+        } else {
+            listOfXRIntegral = oneExperiment.listOfXRIntegral
+            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+        }
+        val seriesOfScatterChart = XYChart.Series<Double, Double>()
+        val seriesTROfBarChart = XYChart.Series<String, Double>()
+        val seriesXROfBarChart = XYChart.Series<String, Double>()
         seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}  d = ${oneExperiment.distance} mm"
         seriesTROfBarChart.name = "Amplitude of TR"
         seriesXROfBarChart.name = "Integral of X-Ray"
-        for (i in 0 until listOfTRAmplitude.size){
+        for (i in 0 until listOfTRAmplitude.size) {
             seriesOfScatterChart.data.add(XYChart.Data(listOfXRIntegral[i], listOfTRAmplitude[i]))
             seriesXROfBarChart.data.add(XYChart.Data(i.toString(), listOfXRIntegral[i]))
             seriesTROfBarChart.data.add(XYChart.Data(i.toString(), listOfTRAmplitude[i]))
-    }
-        return mapOf("scatter" to seriesOfScatterChart, "lineXR" to seriesXROfBarChart,
-            "lineTR" to seriesTROfBarChart)
+        }
+        return mapOf(
+            "scatter" to seriesOfScatterChart, "lineXR" to seriesXROfBarChart,
+            "lineTR" to seriesTROfBarChart
+        )
     }
 
-    private fun calculateDelay(waveForm: ArrayList<Double>, sweep: Int) : String {
+    fun getChartOfTRvsXRDelay(index: Int): XYChart.Series<Double, Double> {
+        val oneExperiment = listOfSomeExperiments[index]
+        val listOfTRAmplitude: MutableList<Double>
+        val listOfXRDelay: MutableList<Double>
+//        if (oneExperiment.listOfXRDealy.size > 49) {
+//            listOfXRDelay = oneExperiment.listOfXRDealy.subList(0, 50)
+//            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
+//        } else {
+//            listOfXRDelay = oneExperiment.listOfXRDealy
+//            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+//        }
+        listOfXRDelay = oneExperiment.listOfXRDelay
+        listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+        val seriesOfScatterChart = XYChart.Series<Double, Double>()
+        seriesOfScatterChart.name = "d = ${oneExperiment.distance} mm"
+        for (i in 0 until listOfTRAmplitude.size) {
+            seriesOfScatterChart.data.add(XYChart.Data(listOfXRDelay[i], listOfTRAmplitude[i]))
+        }
+        return seriesOfScatterChart
+    }
+
+    fun getNameOfExp(index: Int) = listOfSomeExperiments[index].dateOfExperiment
+
+    fun getSortedChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any, Double>> {
+        val oneExperiment = listOfSomeExperiments[index]
+        val listOfTRAmplitude: MutableList<Double>
+        val listOfXRIntegral: MutableList<Double>
+        if (oneExperiment.listOfXRIntegral.size > 49) {
+            listOfXRIntegral = oneExperiment.listOfXRIntegral.subList(0, 50)
+            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
+        } else {
+            listOfXRIntegral = oneExperiment.listOfXRIntegral
+            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+        }
+
+        //sorted stackedBarChart
+        //val treeMap = TreeMap<Double, Double>(Collections.reverseOrder())
+        val treeMap = TreeMap<Double, Double>()
+        for (i in 0 until listOfTRAmplitude.size) {
+            treeMap.put(listOfXRIntegral[i], listOfTRAmplitude[i])
+        }
+
+        val seriesOfScatterChart = XYChart.Series<Double, Double>()
+        val seriesTROfBarChart = XYChart.Series<String, Double>()
+        val seriesXROfBarChart = XYChart.Series<String, Double>()
+        //seriesOfScatterChart.name = "${oneExperiment.dateOfExperiment}  d = ${oneExperiment.distance} mm"
+        seriesOfScatterChart.name = "d = ${oneExperiment.distance} mm"
+        seriesTROfBarChart.name = "Amplitude of TR"
+        seriesXROfBarChart.name = "Integral of X-Ray"
+        var i = 1
+        for (key in treeMap.keys) {
+            seriesOfScatterChart.data.add(XYChart.Data(key, treeMap[key]))
+            seriesXROfBarChart.data.add(XYChart.Data(i.toString(), key))
+            seriesTROfBarChart.data.add(XYChart.Data(i.toString(), treeMap[key]))
+            i++
+        }
+        return mapOf(
+            "scatter" to seriesOfScatterChart, "lineXR" to seriesXROfBarChart,
+            "lineTR" to seriesTROfBarChart
+        )
+    }
+
+
+    private fun calculateDelay(waveForm: ArrayList<Double>, sweep: Int): String {
         val sweepCoeff = getSweepCoefficient(sweep)
         var delay = ""
         var maxOfNoise = waveForm.subList(2, 800).max()

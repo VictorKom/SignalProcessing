@@ -11,6 +11,7 @@ import javafx.scene.chart.StackedBarChart
 import javafx.scene.chart.XYChart
 import javafx.stage.Stage
 import model.OneExperiment
+import java.util.*
 
 class ChartsOfOneExpView {
     private val controller: ChartsOfOneExpController = ChartsOfOneExpController(this)
@@ -21,17 +22,17 @@ class ChartsOfOneExpView {
 
     @FXML
     fun initialize(){
-        val chartsOfOneExperiment = controller.getChartsOfOneExperiments(0)
+        val chartsOfOneExperiment = controller.getChartsOfOneExperiments(0, false)
         scatterChart.data.add(chartsOfOneExperiment["scatter"] as XYChart.Series<Double, Double>)
         barChart.data.add(chartsOfOneExperiment["lineXR"] as XYChart.Series<String, Double>)
         barChart.data.add(chartsOfOneExperiment["lineTR"] as XYChart.Series<String, Double>)
     }
 
-    fun createStage() {
+    fun createStage(path: String) {
         val secondaryStage = Stage()
         secondaryStage.title = "Charts of one experiment"
         secondaryStage.scene = Scene(FXMLLoader.load(Main::class.java.getResource("seriesChartsView.fxml")))
         secondaryStage.show()
-       // controller.saveToFile(secondaryStage.scene, "F:/1.png")
+//        controller.saveToFile(secondaryStage.scene, "$path${controller.getNameOfExp(0)}orig.png")
     }
 }

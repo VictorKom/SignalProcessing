@@ -22,4 +22,8 @@ class OnePulse {
                 "TR signal amplitude: %.1f mV\n".format(amplitudeOfTR) + "X-Ray signal delay: $delay ns (sweep = $sweep)"
     }
 
+    fun getShortInfo() : String{
+        return "TR signal amplitude: %.1f mV\n".format(amplitudeOfTR) + "X-Ray signal delay: $delay ns"
+    }
+
 }

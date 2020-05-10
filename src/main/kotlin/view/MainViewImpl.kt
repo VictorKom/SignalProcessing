@@ -1,7 +1,6 @@
 package view
 
 import Main
-import controller.ChartsOfOneExpController
 import controller.MainViewController
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -10,6 +9,7 @@ import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.XYChart
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
 import javafx.scene.control.Tooltip
 import javafx.stage.Stage
 import model.OneExperiment
@@ -22,7 +22,9 @@ class MainViewImpl : MainView {
     lateinit var clearData: Button
     lateinit var addChart: Button
     lateinit var plotAllSelected: Button
+    lateinit var plotTRvsXRDelay: Button
     lateinit var info: TextArea
+    lateinit var pathToSave: TextField
     lateinit var scatterChart: ScatterChart<Double,Double>
     //lateinit var sweepTimeChooser: ComboBox<String>
 
@@ -39,7 +41,8 @@ class MainViewImpl : MainView {
             controller.chooseDir()
             scatterChart.data.add(controller.createSeries())
             createNodeLabel(scatterChart) }
-        plotAllSelected.setOnAction { ChartsOfOneExpView().createStage() }
+        plotAllSelected.setOnAction { controller.plotAllSelected(pathToSave.text) }
+        plotTRvsXRDelay.setOnAction { controller.plotTRvsXRDelay(pathToSave.text) }
     }
 
     fun start(primaryStage: Stage?) {

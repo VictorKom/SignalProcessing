@@ -7,6 +7,7 @@ import model.OnePulse
 import model.DataRepository
 import model.OneExperiment
 import view.ChartPointView
+import view.ChartTRvsXRDelay
 import view.ChartsOfOneExpView
 import view.MainView
 import java.io.File
@@ -18,7 +19,7 @@ class MainViewController (private var view: MainView) {
 
     fun chooseDir() {
         val dirChooser = DirectoryChooser()
-        dirChooser.initialDirectory = File("F:/Эксперимент/")
+        dirChooser.initialDirectory = File("C:/Эксперимент/")
         val dir = dirChooser.showDialog(Stage())
         currentExperiment = dataRepository.findTRandXRFiles(dir)
         view.refreshTextArea(currentExperiment)
@@ -41,5 +42,12 @@ class MainViewController (private var view: MainView) {
         dataRepository.clearData()
     }
 
+    fun plotAllSelected(path: String) {
+        ChartsOfOneExpView().createStage(path)
+    }
+
+    fun plotTRvsXRDelay(path: String) {
+        ChartTRvsXRDelay().createStage(path)
+    }
 
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view.ChartTRvsXRDelay"
+            stylesheets="@css/seriesCharts.css"
+            prefHeight="400.0" prefWidth="800.0">
+    <ScatterChart fx:id="chartTRvsXRDelay"  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+        <xAxis>
+            <NumberAxis label="X-Ray delay, ns" side="BOTTOM"  autoRanging="false" upperBound="2500" tickUnit="500"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="TR Amplitude, mV" side="LEFT" autoRanging="false" upperBound="125" tickUnit="25"/>
+        </yAxis>
+    </ScatterChart>
+</AnchorPane>

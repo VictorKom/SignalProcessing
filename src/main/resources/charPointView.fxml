@@ -10,19 +10,19 @@
     <LineChart  fx:id="xrLineChart" legendVisible="false" title="X-Ray signal" createSymbols="false"
                 prefHeight="300" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="80">
         <xAxis>
-            <NumberAxis side="BOTTOM" />
+            <NumberAxis label="time, ns" side="BOTTOM" />
         </xAxis>
         <yAxis>
-            <NumberAxis side="LEFT" />
+            <NumberAxis label="Amplitude, V" side="LEFT" />
         </yAxis>
     </LineChart>
     <LineChart fx:id="trLineChart" legendVisible="false" title="TR signal" createSymbols="false"
                prefHeight="300" AnchorPane.bottomAnchor="10" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
         <xAxis>
-            <NumberAxis side="BOTTOM" />
+            <NumberAxis label="time, mks" side="BOTTOM" />
         </xAxis>
         <yAxis>
-            <NumberAxis side="LEFT" />
+            <NumberAxis label="Amplitude, mV" side="LEFT" />
         </yAxis>
     </LineChart>
 

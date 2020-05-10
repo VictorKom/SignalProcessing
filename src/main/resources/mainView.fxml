@@ -10,6 +10,8 @@
     <Label layoutX="200" layoutY="530" text="Experiments info:" />
     <TextArea fx:id="info" layoutX="200" layoutY="550" prefHeight="140" prefWidth="550" AnchorPane.leftAnchor="200" />
     <Button fx:id="plotAllSelected" layoutX="800" layoutY="550" text="Plot all selected series" />
+    <TextField fx:id="pathToSave" layoutX="800" layoutY="600" text="C:/Эксперимент/d = 4 mm/" />
+    <Button fx:id="plotTRvsXRDelay" layoutX="800" layoutY="650" text="Plot TR vs X-Ray delay" />
    <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefHeight="450.0"  title="ScatterChart" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
      <xAxis>
          <NumberAxis label="X-Ray Integral" side="BOTTOM" />
