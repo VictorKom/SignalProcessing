@@ -7,10 +7,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.scene.chart.ScatterChart
 import javafx.scene.chart.XYChart
-import javafx.scene.control.Button
-import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
-import javafx.scene.control.Tooltip
+import javafx.scene.control.*
 import javafx.stage.Stage
 import model.OneExperiment
 
@@ -22,7 +19,10 @@ class MainViewImpl : MainView {
     lateinit var clearData: Button
     lateinit var addChart: Button
     lateinit var plotAllSelected: Button
+    lateinit var oneExpSave: CheckBox
     lateinit var plotTRvsXRDelay: Button
+    lateinit var tRvsXRDelaySave: CheckBox
+    lateinit var isBarChart: CheckBox
     lateinit var info: TextArea
     lateinit var pathToSave: TextField
     lateinit var scatterChart: ScatterChart<Double,Double>
@@ -33,6 +33,7 @@ class MainViewImpl : MainView {
 /*        sweepTimeChooser.selectionModel.selectedItemProperty().
         addListener { _: ObservableValue<out String>, _: String?, newValue: String? ->
             info.text = newValue ?: "" }*/
+        isBarChart.isSelected = true
         clearData.setOnAction {
             controller.clearData()
             scatterChart.data.clear()
@@ -41,8 +42,8 @@ class MainViewImpl : MainView {
             controller.chooseDir()
             scatterChart.data.add(controller.createSeries())
             createNodeLabel(scatterChart) }
-        plotAllSelected.setOnAction { controller.plotAllSelected(pathToSave.text) }
-        plotTRvsXRDelay.setOnAction { controller.plotTRvsXRDelay(pathToSave.text) }
+        plotAllSelected.setOnAction { controller.plotAllSelected(pathToSave.text, oneExpSave.isSelected) }
+        plotTRvsXRDelay.setOnAction { controller.plotTRvsXRDelay(pathToSave.text, tRvsXRDelaySave.isSelected, isBarChart.isSelected) }
     }
 
     fun start(primaryStage: Stage?) {
@@ -64,7 +65,8 @@ class MainViewImpl : MainView {
                 tooltip.style = "-fx-font-size: 17"
                 Tooltip.install(node, tooltip)
                 val property = data.extraValue.toString().split("\t")
-                node.setOnMouseClicked { controller.plotCurrentLineChart(property, data.yValue) }
+               node.setOnMouseClicked { controller.plotCurrentLineChart(property, data.yValue) }
+               // controller.plotCurrentLineChart(property, data.yValue)
             }
         }
     }

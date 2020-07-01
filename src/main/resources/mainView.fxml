@@ -4,29 +4,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane stylesheets="@css/mainView.css" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.MainViewImpl">
-    <Button fx:id="addChart" layoutX="23.0" layoutY="550" text="Add Scatter Chart" AnchorPane.leftAnchor="23" />
-    <Button fx:id="clearData" layoutX="23.0" layoutY="600" text="Clear Chart and Info" AnchorPane.leftAnchor="23" />
-    <Label layoutX="200" layoutY="530" text="Experiments info:" />
-    <TextArea fx:id="info" layoutX="200" layoutY="550" prefHeight="140" prefWidth="550" AnchorPane.leftAnchor="200" />
-    <Button fx:id="plotAllSelected" layoutX="800" layoutY="550" text="Plot all selected series" />
-    <TextField fx:id="pathToSave" layoutX="800" layoutY="600" text="C:/Эксперимент/d = 4 mm/" />
-    <Button fx:id="plotTRvsXRDelay" layoutX="800" layoutY="650" text="Plot TR vs X-Ray delay" />
-   <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefHeight="450.0"  title="ScatterChart" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-     <xAxis>
-         <NumberAxis label="X-Ray Integral" side="BOTTOM" />
-     </xAxis>
-     <yAxis>
-       <NumberAxis label="TR Amplitude" side="LEFT" />
-     </yAxis>
-   </ScatterChart>
-<!--   <ComboBox fx:id="sweepTimeChooser" layoutX="425.0" layoutY="500.0" prefWidth="150.0" promptText="Sweep time">
-       <items>
-           <FXCollections fx:factory="observableArrayList">
-               <String fx:value="1 mks"/>
-               <String fx:value="400 ns"/>
-               <String fx:value="200 ns"/>
-           </FXCollections>
-       </items>
-   </ComboBox>-->
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/mainView.css"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="view.MainViewImpl">
+    <Button fx:id="addChart" layoutX="23.0" layoutY="550" text="Add Scatter Chart" AnchorPane.leftAnchor="23"/>
+    <Button fx:id="clearData" layoutX="23.0" layoutY="600" text="Clear Chart and Info" AnchorPane.leftAnchor="23"/>
+    <Label layoutX="200" layoutY="530" text="Experiments info:"/>
+    <TextArea fx:id="info" layoutX="200" layoutY="550" prefHeight="140" prefWidth="550" AnchorPane.leftAnchor="200"/>
+    <Button fx:id="plotAllSelected" layoutX="800" layoutY="550" text="Plot all selected series"/>
+    <Label layoutX="800" layoutY="600" text="Path to save charts:"/>
+    <TextField fx:id="pathToSave" layoutX="920" layoutY="600" text="C:/Эксперимент/d = 4 mm/"/>
+    <Button fx:id="plotTRvsXRDelay" layoutX="800" layoutY="650" text="Plot TR vs X-Ray delay"/>
+    <ScatterChart fx:id="scatterChart" layoutX="23.0" layoutY="14.0" prefHeight="450.0" title="ScatterChart"
+                  AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+        <xAxis>
+            <NumberAxis label="X-Ray Integral" side="BOTTOM"/>
+        </xAxis>
+        <yAxis>
+            <NumberAxis label="TR Amplitude" side="LEFT"/>
+        </yAxis>
+    </ScatterChart>
+    <CheckBox fx:id="oneExpSave" layoutX="950" layoutY="550" mnemonicParsing="false" text="Enable saving"/>
+    <CheckBox fx:id="tRvsXRDelaySave" layoutX="950" layoutY="650" mnemonicParsing="false" text="Enable saving"/>
+    <CheckBox fx:id="isBarChart" layoutX="1050" layoutY="650" text="is Bar Chart"/>
+    <!--   <ComboBox fx:id="sweepTimeChooser" layoutX="425.0" layoutY="500.0" prefWidth="150.0" promptText="Sweep time">
+           <items>
+               <FXCollections fx:factory="observableArrayList">
+                   <String fx:value="1 mks"/>
+                   <String fx:value="400 ns"/>
+                   <String fx:value="200 ns"/>
+               </FXCollections>
+           </items>
+       </ComboBox>-->
 </AnchorPane>

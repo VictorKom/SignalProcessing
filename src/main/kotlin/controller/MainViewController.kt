@@ -6,10 +6,7 @@ import javafx.stage.Stage
 import model.OnePulse
 import model.DataRepository
 import model.OneExperiment
-import view.ChartPointView
-import view.ChartTRvsXRDelay
-import view.ChartsOfOneExpView
-import view.MainView
+import view.*
 import java.io.File
 
 class MainViewController (private var view: MainView) {
@@ -22,11 +19,16 @@ class MainViewController (private var view: MainView) {
         dirChooser.initialDirectory = File("C:/Эксперимент/")
         val dir = dirChooser.showDialog(Stage())
         currentExperiment = dataRepository.findTRandXRFiles(dir)
-        view.refreshTextArea(currentExperiment)
+
     }
 
     fun createSeries() : XYChart.Series<Double,Double> {
-        return dataRepository.createSeriesXRvsTR(currentExperiment)
+        val series = dataRepository.createSeriesXRvsTR(currentExperiment)
+        currentExperiment.eff = calculateEff(currentExperiment.listOfTRAmplitude)
+        currentExperiment.sumTR = currentExperiment.listOfTRAmplitude.sum()
+        currentExperiment.sumXR = currentExperiment.listOfXRIntegral.sum()
+        view.refreshTextArea(currentExperiment)
+        return series
     }
 
     fun plotCurrentLineChart(property: List<String>, amplitude: Double) {
@@ -42,12 +44,29 @@ class MainViewController (private var view: MainView) {
         dataRepository.clearData()
     }
 
-    fun plotAllSelected(path: String) {
-        ChartsOfOneExpView().createStage(path)
+    fun plotAllSelected(path: String, enableSaving: Boolean) {
+        ChartsOfOneExpView().createStage(path,enableSaving)
     }
 
-    fun plotTRvsXRDelay(path: String) {
-        ChartTRvsXRDelay().createStage(path)
+    fun plotTRvsXRDelay(path: String, enableSaving: Boolean, isBarChart: Boolean) {
+        if (isBarChart){
+            BarChartOfXRDelay().createStage(path, enableSaving)
+        }
+        else {
+            ScatterChartTRvsXRDelay().createStage(path, enableSaving)
+        }
     }
+
+    private fun calculateEff(listOfTRAmplitude:  MutableList<Double>): String {
+        var count = 0.0
+        val size = listOfTRAmplitude.size * 1.0
+        for (signal in listOfTRAmplitude){
+            if (signal > 0) count++
+        }
+        count /= size
+        count *= 100.0
+        return "${count.toInt()} %"
+    }
+
 
 }

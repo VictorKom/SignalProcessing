@@ -1,8 +1,10 @@
 package controller
 
+import javafx.scene.Scene
 import javafx.scene.chart.XYChart
 import model.OnePulse
 import model.DataRepository
+import utils.ImageSaver
 import view.ChartPointView
 
 class ChartPointController (private var view: ChartPointView) {
@@ -18,7 +20,13 @@ class ChartPointController (private var view: ChartPointView) {
     }
 
     fun getFileInfo() : String {
-//        return onePulse.getInfo()
-        return onePulse.getShortInfo()
+        return onePulse.getInfo()
+//        return onePulse.getShortInfo()
     }
+
+    fun saveToFile(scene: Scene, pathToImage: String) {
+        ImageSaver.saveToFile(scene, pathToImage)
+    }
+
+    fun getNameOfExp() = onePulse.getNumber()
 }

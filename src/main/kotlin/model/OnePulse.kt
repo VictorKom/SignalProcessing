@@ -26,4 +26,6 @@ class OnePulse {
         return "TR signal amplitude: %.1f mV\n".format(amplitudeOfTR) + "X-Ray signal delay: $delay ns"
     }
 
+    fun getNumber(): String = pathToCurrentFileOfXR.substringAfterLast("_").substringBefore(".")
+
 }

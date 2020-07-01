@@ -179,15 +179,8 @@ class DataRepository {
 
     fun getChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any, Double>> {
         val oneExperiment = listOfSomeExperiments[index]
-        val listOfTRAmplitude: MutableList<Double>
-        val listOfXRIntegral: MutableList<Double>
-        if (oneExperiment.listOfXRIntegral.size > 49) {
-            listOfXRIntegral = oneExperiment.listOfXRIntegral.subList(0, 50)
-            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
-        } else {
-            listOfXRIntegral = oneExperiment.listOfXRIntegral
-            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
-        }
+        val listOfTRAmplitude = getSubList(oneExperiment.listOfTRAmplitude)
+        val listOfXRIntegral =  getSubList(oneExperiment.listOfXRIntegral)
         val seriesOfScatterChart = XYChart.Series<Double, Double>()
         val seriesTROfBarChart = XYChart.Series<String, Double>()
         val seriesXROfBarChart = XYChart.Series<String, Double>()
@@ -196,8 +189,8 @@ class DataRepository {
         seriesXROfBarChart.name = "Integral of X-Ray"
         for (i in 0 until listOfTRAmplitude.size) {
             seriesOfScatterChart.data.add(XYChart.Data(listOfXRIntegral[i], listOfTRAmplitude[i]))
-            seriesXROfBarChart.data.add(XYChart.Data(i.toString(), listOfXRIntegral[i]))
-            seriesTROfBarChart.data.add(XYChart.Data(i.toString(), listOfTRAmplitude[i]))
+            seriesXROfBarChart.data.add(XYChart.Data((i+1).toString(), listOfXRIntegral[i]))
+            seriesTROfBarChart.data.add(XYChart.Data((i+1).toString(), listOfTRAmplitude[i]))
         }
         return mapOf(
             "scatter" to seriesOfScatterChart, "lineXR" to seriesXROfBarChart,
@@ -205,19 +198,10 @@ class DataRepository {
         )
     }
 
-    fun getChartOfTRvsXRDelay(index: Int): XYChart.Series<Double, Double> {
+    fun getScatterChartOfTRvsXRDelay(index: Int): XYChart.Series<Double, Double> {
         val oneExperiment = listOfSomeExperiments[index]
-        val listOfTRAmplitude: MutableList<Double>
-        val listOfXRDelay: MutableList<Double>
-//        if (oneExperiment.listOfXRDealy.size > 49) {
-//            listOfXRDelay = oneExperiment.listOfXRDealy.subList(0, 50)
-//            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
-//        } else {
-//            listOfXRDelay = oneExperiment.listOfXRDealy
-//            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
-//        }
-        listOfXRDelay = oneExperiment.listOfXRDelay
-        listOfTRAmplitude = oneExperiment.listOfTRAmplitude
+        val listOfTRAmplitude = getSubList(oneExperiment.listOfTRAmplitude)
+        val listOfXRDelay = getSubList(oneExperiment.listOfXRDelay)
         val seriesOfScatterChart = XYChart.Series<Double, Double>()
         seriesOfScatterChart.name = "d = ${oneExperiment.distance} mm"
         for (i in 0 until listOfTRAmplitude.size) {
@@ -226,27 +210,58 @@ class DataRepository {
         return seriesOfScatterChart
     }
 
-    fun getNameOfExp(index: Int) = listOfSomeExperiments[index].dateOfExperiment
+    fun getBarChartOfTRvsXRDelay(index: Int): XYChart.Series<String, Double> {
+        val oneExperiment = listOfSomeExperiments[index]
+        return getSeriesXvsXRDelay(index, getSubList(oneExperiment.listOfTRAmplitude))
+            .apply { name = "d = ${oneExperiment.distance} mm" }
+    }
+
+    fun getBarChartOfIntegralvsXRDelay(index: Int): XYChart.Series<String, Double> {
+        val oneExperiment = listOfSomeExperiments[index]
+        return getSeriesXvsXRDelay(index, getSubList(oneExperiment.listOfXRIntegral))
+    }
+
+    private fun getSeriesXvsXRDelay(index: Int, x: MutableList<Double>):  XYChart.Series<String, Double> {
+        val oneExperiment = listOfSomeExperiments[index]
+        val listOfXRDelay = getSubList(oneExperiment.listOfXRDelay)
+        // val listOfXRDelay = oneExperiment.listOfXRDelay
+        val seriesOfBarChart = XYChart.Series<String, Double>()
+        var a = 0
+        var b = 50
+        val tempList = ArrayList<Double>()
+        while (b <= 900){
+            for ((i,delay) in listOfXRDelay.withIndex()){
+                if (delay >= a && delay <b){
+                    if (x[i] > 0) {
+                        tempList.add(x[i])
+                    }
+                }
+            }
+           // seriesOfBarChart.data.add(XYChart.Data(b.toString(), tempList.sum()))
+            seriesOfBarChart.data.add(XYChart.Data(b.toString(), tempList.size.toDouble()))
+            tempList.clear()
+            a += 50
+            b += 50
+        }
+        return seriesOfBarChart
+    }
+
+
+    private fun getSubList(list: MutableList<Double>, size: Int = 50): MutableList<Double> {
+        return if (list.size > 49) list.subList(0, size)
+        else list
+    }
+
+    fun getDateOfExp(index: Int) = listOfSomeExperiments[index].dateOfExperiment
 
     fun getSortedChartsOfOneExperiments(index: Int): Map<String, XYChart.Series<out Any, Double>> {
         val oneExperiment = listOfSomeExperiments[index]
-        val listOfTRAmplitude: MutableList<Double>
-        val listOfXRIntegral: MutableList<Double>
-        if (oneExperiment.listOfXRIntegral.size > 49) {
-            listOfXRIntegral = oneExperiment.listOfXRIntegral.subList(0, 50)
-            listOfTRAmplitude = oneExperiment.listOfTRAmplitude.subList(0, 50)
-        } else {
-            listOfXRIntegral = oneExperiment.listOfXRIntegral
-            listOfTRAmplitude = oneExperiment.listOfTRAmplitude
-        }
-
-        //sorted stackedBarChart
-        //val treeMap = TreeMap<Double, Double>(Collections.reverseOrder())
+        val listOfTRAmplitude = getSubList(oneExperiment.listOfTRAmplitude)
+        val listOfXRIntegral =  getSubList(oneExperiment.listOfXRIntegral)
         val treeMap = TreeMap<Double, Double>()
         for (i in 0 until listOfTRAmplitude.size) {
             treeMap.put(listOfXRIntegral[i], listOfTRAmplitude[i])
         }
-
         val seriesOfScatterChart = XYChart.Series<Double, Double>()
         val seriesTROfBarChart = XYChart.Series<String, Double>()
         val seriesXROfBarChart = XYChart.Series<String, Double>()
@@ -266,7 +281,6 @@ class DataRepository {
             "lineTR" to seriesTROfBarChart
         )
     }
-
 
     private fun calculateDelay(waveForm: ArrayList<Double>, sweep: Int): String {
         val sweepCoeff = getSweepCoefficient(sweep)

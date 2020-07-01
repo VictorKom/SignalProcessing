@@ -10,10 +10,10 @@
 <?import javafx.scene.chart.NumberAxis?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.ChartTRvsXRDelay"
+            fx:controller="view.ScatterChartTRvsXRDelay"
             stylesheets="@css/seriesCharts.css"
             prefHeight="400.0" prefWidth="800.0">
-    <ScatterChart fx:id="chartTRvsXRDelay"  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
+    <ScatterChart fx:id="scatterChartTRvsXRDelay"  AnchorPane.leftAnchor="30" AnchorPane.topAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.bottomAnchor="30">
         <xAxis>
             <NumberAxis label="X-Ray delay, ns" side="BOTTOM"  autoRanging="false" upperBound="2500" tickUnit="500"/>
         </xAxis>

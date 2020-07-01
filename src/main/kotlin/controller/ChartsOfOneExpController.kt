@@ -1,18 +1,11 @@
 package controller
 
-import javafx.embed.swing.SwingFXUtils
 import javafx.scene.Scene
-import javafx.scene.SnapshotParameters
-import javafx.scene.chart.StackedBarChart
 import javafx.scene.chart.XYChart
-import javafx.scene.image.WritableImage
-import javafx.scene.transform.Scale
 import model.DataRepository
 import utils.ImageSaver
+import utils.TxtSaver
 import view.ChartsOfOneExpView
-import java.io.File
-import java.io.IOException
-import javax.imageio.ImageIO
 
 
 class ChartsOfOneExpController (private val view: ChartsOfOneExpView) {
@@ -28,6 +21,11 @@ class ChartsOfOneExpController (private val view: ChartsOfOneExpView) {
         ImageSaver.saveToFile(scene, pathToImage)
     }
 
-    fun getNameOfExp(index: Int) = dataRepository.getNameOfExp(index)
+    fun saveToFile(seriesTR: XYChart.Series<String, Double>, seriesXR: XYChart.Series<String, Double>, pathToTxt: String) {
+        TxtSaver.saveToTxtFileBars(seriesTR, seriesXR, pathToTxt)
+    }
+
+
+    fun getNameOfExp(index: Int) = dataRepository.getDateOfExp(index)
 
 }

@@ -10,8 +10,14 @@ class OneExperiment {
     var sweep = 1
     var distance = 0
     var dateOfExperiment = ""
+    var eff = "0 %"
+    var sumTR = 0.0
+    var sumXR = 0.0
 
     override fun toString(): String {
-        return "date: $dateOfExperiment\td = $distance mm\tamount = ${filesMap.size}"
+        val sumTRString = "%.1f".format(sumTR)
+        val sumXRString = "%.1f".format(sumXR)
+        return "date: $dateOfExperiment\td = $distance mm\tamount = ${filesMap.size}  eff = $eff" +
+                "\tsumTR = $sumTRString\tsumXR = $sumXRString"
     }
 }

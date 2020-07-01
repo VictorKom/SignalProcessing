@@ -21,4 +21,7 @@
     -fx-stroke-width: 5px;
 }
 
+.default-color0.chart-bar { -fx-bar-fill: #800080 }
+
+
 
